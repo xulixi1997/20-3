@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>江西文斋网络科技有限公司 | 移动应用开发专家</title>
+    <meta name="description" content="江西文斋网络科技有限公司专注于高端移动应用开发、企业数字化转型及UI/UX设计。位于南昌市，服务全球。">
+    
+    <!-- 引入 Tailwind CSS 进行快速布局 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- 引入 Phosphor Icons (轻量级图标库) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- 自定义配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        wenzhai: {
+                            dark: '#0f172a',
+                            primary: '#0F766E', // 墨绿
+                            accent: '#EA580C',  // 赤陶
+                            light: '#F0FDF4',
+                            gray: '#64748B'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans SC"', 'sans-serif'],
+                    },
+                    spacing: {
+                        '128': '32rem',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* 全局平滑滚动 */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0F766E; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0d5f58; 
+        }
+
+        /* 动画类 */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hover-zoom img {
+            transition: transform 0.5s ease;
+        }
+        .hover-zoom:hover img {
+            transform: scale(1.05);
+        }
+        
+        /* 玻璃拟态导航 */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="font-sans text-slate-800 bg-slate-50 antialiased selection:bg-wenzhai-primary selection:text-white">
+
+    <!-- 模块 1: 顶部导航栏 -->
+    <nav class="fixed w-full z-50 transition-all duration-300 glass-nav" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <div class="w-10 h-10 bg-wenzhai-primary rounded-tr-xl rounded-bl-xl flex items-center justify-center text-white font-bold text-xl">文</div>
+                    <div>
+                        <span class="block text-xl font-bold text-slate-900 tracking-tight">文斋科技</span>
+                        <span class="block text-xs text-wenzhai-gray tracking-widest uppercase">Wenzhai Tech</span>
+                    </div>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#about" class="text-slate-600 hover:text-wenzhai-primary font-medium transition">关于我们</a>
+                    <a href="#services" class="text-slate-600 hover:text-wenzhai-primary font-medium transition">核心服务</a>
+                    <a href="#portfolio" class="text-slate-600 hover:text-wenzhai-primary font-medium transition">项目案例</a>
+                    <a href="#process" class="text-slate-600 hover:text-wenzhai-primary font-medium transition">合作流程</a>
+                    <a href="#news" class="text-slate-600 hover:text-wenzhai-primary font-medium transition">行业动态</a>
+                    <a href="#contact" class="px-6 py-2.5 bg-wenzhai-primary text-white rounded-full hover:bg-teal-800 transition shadow-lg shadow-teal-500/30 font-medium">联系我们</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-600 hover:text-wenzhai-primary focus:outline-none">
+                        <i class="ph ph-list text-3xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full">
+            <div class="px-4 pt-2 pb-6 space-y-2 shadow-xl">
+                <a href="#about" class="block px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:bg-teal-50 hover:text-wenzhai-primary">关于我们</a>
+                <a href="#services" class="block px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:bg-teal-50 hover:text-wenzhai-primary">核心服务</a>
+                <a href="#portfolio" class="block px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:bg-teal-50 hover:text-wenzhai-primary">项目案例</a>
+                <a href="#contact" class="block px-3 py-3 mt-4 text-center rounded-md text-base font-bold bg-wenzhai-primary text-white">立即咨询</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 模块 2: Hero 区域 -->
+    <section class="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
+        <!-- 背景图 -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://picsum.photos/seed/tech_architecture/1920/1080" alt="Background" class="w-full h-full object-cover brightness-[0.35]">
+        </div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left pt-20">
+            <div class="sm:w-2/3 lg:w-1/2 fade-in-up">
+                <span class="inline-block py-1 px-3 rounded-full bg-wenzhai-accent/20 text-wenzhai-accent border border-wenzhai-accent/30 text-sm font-semibold mb-6">
+                    🚀 赋能企业数字化未来
+                </span>
+                <h1 class="text-4xl sm:text-6xl font-black text-white leading-tight mb-6">
+                    以智慧构建 <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-200">无界数字体验</span>
+                </h1>
+                <p class="text-lg sm:text-xl text-slate-300 mb-10 leading-relaxed font-light">
+                    江西文斋网络科技有限公司，致力于将深厚的行业洞察与前沿移动技术完美融合。我们不只是写代码，我们为您打造可持续增长的商业引擎。
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="#contact" class="px-8 py-4 bg-wenzhai-accent text-white rounded-lg font-bold text-lg hover:bg-orange-700 transition shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2">
+                        开启项目 <i class="ph ph-arrow-right"></i>
+                    </a>
+                    <a href="#portfolio" class="px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-lg font-bold text-lg hover:bg-white/20 transition flex items-center justify-center">
+                        浏览案例
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 滚动提示 -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-white/50">
+            <i class="ph ph-caret-down text-3xl"></i>
+        </div>
+    </section>
+
+    <!-- 模块 3: 数据概览条 (Ticker) -->
+    <div class="bg-wenzhai-primary text-white py-6 relative z-20 -mt-2">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-teal-600/50">
+            <div>
+                <p class="text-3xl font-bold counter" data-target="500">0</p>
+                <p class="text-xs uppercase tracking-wider opacity-80 mt-1">成功案例</p>
+            </div>
+            <div>
+                <p class="text-3xl font-bold counter" data-target="98">0</p>
+                <p class="text-xs uppercase tracking-wider opacity-80 mt-1">% 客户满意度</p>
+            </div>
+            <div>
+                <p class="text-3xl font-bold counter" data-target="15">0</p>
+                <p class="text-xs uppercase tracking-wider opacity-80 mt-1">项行业专利</p>
+            </div>
+            <div>
+                <p class="text-3xl font-bold counter" data-target="24">0</p>
+                <p class="text-xs uppercase tracking-wider opacity-80 mt-1">小时技术响应</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模块 4: 关于我们简介 -->
+    <section id="about" class="py-20 md:py-28 bg-white overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="relative fade-in-up">
+                    <div class="absolute -top-4 -left-4 w-24 h-24 bg-wenzhai-accent/10 rounded-full z-0"></div>
+                    <img src="https://picsum.photos/seed/office_meeting/800/600" alt="Our Office" class="relative z-10 rounded-2xl shadow-2xl w-full object-cover h-[400px]">
+                    <div class="absolute -bottom-10 -right-10 w-48 h-48 bg-teal-50 rounded-full z-0"></div>
+                    <!-- 浮动卡片 -->
+                    <div class="absolute bottom-8 -left-8 bg-white p-6 rounded-xl shadow-xl z-20 max-w-xs hidden md:block">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center">
+                                <i class="ph ph-medal text-2xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">专业认证</p>
+                                <p class="font-bold text-slate-800">江西省高新技术企业</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fade-in-up delay-200">
+                    <h2 class="text-sm font-bold text-wenzhai-primary uppercase tracking-widest mb-2">关于文斋</h2>
+                    <h3 class="text-3xl md:text-4xl font-black text-slate-900 mb-6">深耕南昌，<br>服务全球数字化浪潮</h3>
+                    <p class="text-slate-600 leading-relaxed mb-6">
+                        江西文斋网络科技有限公司坐落于英雄城南昌，是一家专注于移动互联网解决方案的创新型科技企业。我们坚信技术应当像水一样，不仅具有穿透力，更能滋养万物。
+                    </p>
+                    <p class="text-slate-600 leading-relaxed mb-8">
+                        从原生APP开发到复杂的企业级ERP系统，从微信生态构建到物联网(IoT)接口开发，文斋科技始终坚持“代码工匠”精神，为每一个像素负责，为每一行逻辑把关。
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3">
+                            <i class="ph-fill ph-check-circle text-wenzhai-primary text-xl"></i>
+                            <span class="text-slate-700 font-medium">全栈自研团队，拒绝外包转包</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="ph-fill ph-check-circle text-wenzhai-primary text-xl"></i>
+                            <span class="text-slate-700 font-medium">CMMI3级软件开发成熟度认证</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="ph-fill ph-check-circle text-wenzhai-primary text-xl"></i>
+                            <span class="text-slate-700 font-medium">提供源代码交付与终身技术维护</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块 5: 核心价值观 -->
+    <section class="py-16 bg-slate-50 border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-8 bg-white rounded-2xl shadow-sm hover:shadow-xl transition duration-300 group">
+                    <div class="w-16 h-16 mx-auto bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:text-white transition">
+                        <i class="ph ph-lightbulb text-3xl"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3">创新驱动</h4>
+                    <p class="text-slate-500 text-sm">不满足于现状，持续探索AI、大数据等前沿技术在商业场景的落地。</p>
+                </div>
+                <div class="p-8 bg-white rounded-2xl shadow-sm hover:shadow-xl transition duration-300 group">
+                    <div class="w-16 h-16 mx-auto bg-teal-50 text-teal-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-teal-600 group-hover:text-white transition">
+                        <i class="ph ph-shield-check text-3xl"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3">坚实可靠</h4>
+                    <p class="text-slate-500 text-sm">以金融级的安全标准构建每一行代码，确保您的数据与业务万无一失。</p>
+                </div>
+                <div class="p-8 bg-white rounded-2xl shadow-sm hover:shadow-xl transition duration-300 group">
+                    <div class="w-16 h-16 mx-auto bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-orange-600 group-hover:text-white transition">
+                        <i class="ph ph-handshake text-3xl"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3">共生共赢</h4>
+                    <p class="text-slate-500 text-sm">我们将客户视为合作伙伴，深入理解业务痛点，共同伴随产品成长。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块 6: 服务标题区 -->
+    <section id="services" class="py-16 bg-wenzhai-dark text-white text-center">
+        <div class="max-w-3xl mx-auto px-4">
+            <h2 class="text-3xl md:text-5xl font-black mb-6">我们的核心竞争力</h2>
+            <p class="text-slate-400 text-lg">全方位的数字化解决方案，从概念设计到产品落地，一站式服务。</p>
+        </div>
+    </section>
+
+    <!-- 模块 7: 移动应用开发 (重点服务) -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2 order-2 md:order-1 fade-in-up">
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="w-12 h-1 bg-wenzhai-accent"></span>
+                        <span class="text-wenzhai-accent font-bold uppercase">Mobile App Development</span>
+                    </div>
+                    <h3 class="text-3xl font-bold text-slate-900 mb-4">iOS & Android 原生开发</h3>
+                    <p class="text-slate-600 mb-6">
+                        我们精通 Swift, Kotlin 以及 Flutter 跨平台技术。无论是电商零售、在线教育还是社交娱乐，我们都能为您打造流畅、稳定且符合各大应用商店规范的高品质APP。
+                    </p>
+                    <ul class="grid grid-cols-2 gap-4 mb-8">
+                        <li class="flex items-center text-slate-700"><i class="ph-fill ph-caret-right text-wenzhai-accent mr-2"></i> 极速性能优化</li>
+                        <li class="flex items-center text-slate-700"><i class="ph-fill ph-caret-right text-wenzhai-accent mr-2"></i> 复杂动效实现</li>
+                        <li class="flex items-center text-slate-700"><i class="ph-fill ph-caret-right text-wenzhai-accent mr-2"></i> 第三方支付接入</li>
+                        <li class="flex items-center text-slate-700"><i class="ph-fill ph-caret-right text-wenzhai-accent mr-2"></i> 硬件蓝牙交互</li>
+                    </ul>
+                </div>
+                <div class="md:w-1/2 order-1 md:order-2 hover-zoom overflow-hidden rounded-xl shadow-2xl">
+                    <img src="https://picsum.photos/seed/mobile_app/800/600" alt="Mobile Development" class="w-full">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块 8: UI/UX 设计 -->
+    <section class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2 hover-zoom overflow-hidden rounded-xl shadow-2xl">
+                    <img src="https://picsum.photos/seed/ui_design/800/600" alt="UI UX Design" class="w-full">
+                </div>
+                <div class="md:w-1/2 fade-in-up">
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="w-12 h-1 bg-purple-600"></span>
+                        <span class="text-purple-600 font-bold uppercase">Product Design</span>
+                    </div>
+                    <h3 class="text-3xl font-bold text-slate-900 mb-4">交互体验与视觉设计</h3>
+                    <p class="text-slate-600 mb-6">
+                        好看的皮囊千篇一律，有趣的灵魂万里挑一。我们的设计团队遵循以用户为中心的设计原则（UCD），通过原型验证、用户画像分析，打造既美观又易用的界面。
+                    </p>
+                    <div class="flex gap-3 flex-wrap">
+                        <span class="px-3 py-1 bg-white border border-slate-200 rounded-full text-xs font-medium text-slate-600">Figma</span>
+                        <span class="px-3 py-1 bg-white border border-slate-200 rounded-full text-xs font-medium text-slate-600">Sketch</span>
+                        <span class="px-3 py-1 bg-white border border-slate-200 rounded-full text-xs font-medium text-slate-600">Adobe XD</span>
+                        <span class="px-3 py-1 bg-white border border-slate-200 rounded-full text-xs font-medium text-slate-600">Principle</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块 9: 企业级解决方案 -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2 order-2 md:order-1 fade-in-up">
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="w-12 h-1 bg-teal-600"></span>
+                        <span class="text-teal-600 font-bold uppercase">Enterprise Solutions</span>
+                    </div>
+                    <h3 class="text-3xl font-bold text-slate-900 mb-4">行业软件定制与系统集成</h3>
+                    <p class="text-slate-600 mb-6">
+                        针对传统企业数字化转型的痛点，我们提供OA、CRM、ERP及供应链管理系统的深度定制开发。打通数据孤岛，实现业务流程自动化。
+                    </p>
+                    <a href="#" class="text-teal-600 font-bold hover:underline">查看行业解决方案 &rarr;</a>
+                </div>
+                <div class="md:w-1/2 order-1 md:order-2 hover-zoom overflow-hidden rounded-xl shadow-2xl">
+                    <img src="https://picsum.photos/seed/dashboard/800/600" alt="Enterprise System" class="w-full">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块 10: 技术栈展示 -->
+    <section class="py-16 bg-slate-900 text-white overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 text-center mb-10">
+            <h2 class="text-2xl font-bold mb-2">驱动未来的技术引擎</h2>
+            <p class="text-slate-400">我们使用经过实战检验的现代技术栈</p>
+        </div>
+        <!-- 简单的Grid展示技术 -->
+        <div class="max-w-6xl mx-auto px-4 grid grid-cols-2 md:grid-cols-6 gap-8 text-center opacity-70">
+            <div class="flex flex-col items-center gap-2 hover:opacity-100 transition"><i class="ph ph-android-logo text-4xl"></i><span class="text-sm">Android</span></div>
+            <div class="flex flex-col items-center gap-2 hover:opacity-100 transition"><i class="ph ph-apple-logo text-4xl"></i><span class="text-sm">iOS</span></div>
+            <div class="flex flex-col items-center gap-2 hover:opacity-100 transition"><i class="ph ph-code text-4xl"></i><span class="text-sm">Vue.js</span></div>
+            <div class="flex flex-col items-center gap-2 hover:opacity-100 transition"><i class="ph ph-atom text-4xl"></i><span class="text-sm">React</span></div>
+            <div class="flex flex-col items-center gap-2 hover:opacity-100 transition"><i class="ph ph-database text-4xl"></i><span class="text-sm">MySQL</span></div>
+            <div class="flex flex-col items-center gap-2 hover:opacity-100 transition"><i class="ph ph-cloud text-4xl"></i><span class="text-sm">Aliyun</span></div>
+        </div>
+    </section>
+
+    <!-- 模块 11: 服务流程 -->
+    <section id="process" class="py-20 bg-gradient-to-b from-white to-slate-50">
+        <div class="max-w-7xl mx-auto px-4 text-center mb-16">
+            <h2 class="text-3xl font-black text-slate-900">标准化交付流程</h2>
+            <p class="text-slate-500 mt-4">透明、规范、高效的项目管理体系</p>
+        </div>
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 relative">
+                <!-- Line connecting steps (desktop) -->
+                <div class="hidden md:block absolute top-12 left-0 w-full h-1 bg-slate-200 z-0"></div>
+
+                <!-- Step 1 -->
+                <div class="relative z-10 flex flex-col items-center text-center group">
+                    <div class="w-24 h-24 bg-white border-4 border-wenzhai-primary rounded-full flex items-center justify-center text-2xl font-bold text-wenzhai-primary shadow-lg mb-6 group-hover:bg-wenzhai-primary group-hover:text-white transition duration-300">01</div>
+                    <h4 class="font-bold text-lg mb-2">需求分析</h4>
+                    <p class="text-sm text-slate-500 px-4">深度调研，梳理功能清单与业务逻辑。</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative z-10 flex flex-col items-center text-center group">
+                    <div class="w-24 h-24 bg-white border-4 border-slate-300 rounded-full flex items-center justify-center text-2xl font-bold text-slate-400 shadow-lg mb-6 group-hover:border-wenzhai-primary group-hover:text-wenzhai-primary transition duration-300">02</div>
+                    <h4 class="font-bold text-lg mb-2">原型设计</h4>
+                    <p class="text-sm text-slate-500 px-4">输出高保真UI图与交互原型，确认视觉风格。</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative z-10 flex flex-col items-center text-center group">
+                    <div class="w-24 h-24 bg-white border-4 border-slate-300 rounded-full flex items-center justify-center text-2xl font-bold text-slate-400 shadow-lg mb-6 group-hover:border-wenzhai-primary group-hover:text-wenzhai-primary transition duration-300">03</div>
+                    <h4 class="font-bold text-lg mb-2">敏捷开发</h4>
+                    <p class="text-sm text-slate-500 px-4">前后端并行开发，定期阶段性汇报演示。</p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="relative z-10 flex flex-col items-center text-center group">
+                    <div class="w-24 h-24 bg-white border-4 border-slate-300 rounded-full flex items-center justify-center text-2xl font-bold text-slate-400 shadow-lg mb-6 group-hover:border-wenzhai-primary group-hover:text-wenzhai-primary transition duration-300">04</div>
+                    <h4 class="font-bold text-lg mb-2">测试验收</h4>
+                    <p class="text-sm text-slate-500 px-4">压力测试、兼容性测试，修复Bug。</p>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="relative z-10 flex flex-col items-center text-center group">
+                    <div class="w-24 h-24 bg-white border-4 border-slate-300 rounded-full flex items-center justify-center text-2xl font-bold text-slate-400 shadow-lg mb-6 group-hover:border-wenzhai-primary group-hover:text-wenzhai-primary transition duration-300">05</div>
+                    <h4 class="font-bold text-lg mb-2">交付运维</h4>
+                    <p class="text-sm text-slate-500 px-4">协助上线应用商店，提供长期技术支持。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块 12: 精选案例展示 (Grid) -->
+    <section id="portfolio" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-3xl font-black text-slate-900">近期作品</h2>
+                    <p class="text-slate-500 mt-2">我们引以为傲的成功案例</p>
+                </div>
+                <a href="#" class="hidden md:block px-6 py-2 border border-slate-300 rounded-full text-sm font-bold hover:bg-slate-900 hover:text-white transition">查看全部</a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Case 1 -->
+                <div class="group cursor-pointer">
+                    <div class="relative overflow-hidden rounded-xl aspect-[4/3] mb-4">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition z-10 flex items-center justify-center">
+                            <span class="text-white border border-white px-4 py-2 rounded-full">查看详情</span>
+                        </div>
+                        <img src="https://picsum.photos/seed/foodapp/800/600" alt="Food Delivery App" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 group-hover:text-wenzhai-primary transition">“赣味鲜”生鲜配送平台</h3>
+                    <p class="text-slate-500 text-sm mt-1">O2O电商 / 微信小程序 / 骑手端APP</p>
+                </div>
+
+                <!-- Case 2 -->
+                <div class="group cursor-pointer">
+                    <div class="relative overflow-hidden rounded-xl aspect-[4/3] mb-4">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition z-10 flex items-center justify-center">
+                            <span class="text-white border border-white px-4 py-2 rounded-full">查看详情</span>
+                        </div>
+                        <img src="https://picsum.photos/seed/eduapp/800/600" alt="Education App" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 group-hover:text-wenzhai-primary transition">智慧校园管理系统</h3>
+                    <p class="text-slate-500 text-sm mt-1">教育科技 / 家校互联 / 数据大屏</p>
+                </div>
+
+                <!-- Case 3 -->
+                <div class="group cursor-pointer">
+                    <div class="relative overflow-hidden rounded-xl aspect-[4/3] mb-4">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition z-10 flex items-center justify-center">
+                            <span class="text-white border border-white px-4 py-2 rounded-full">查看详情</span>
+                        </div>
+                        <img src="https://picsum.photos/seed/finance/800/600" alt="Fintech" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 group-hover:text-wenzhai-primary transition">企业资金流转SaaS</h3>
+                    <p class="text-slate-500 text-sm mt-1">金融科技 / 数据可视化 / 安全风控</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块 13: 深度案例 (Highlight) -->
+    <section class="py-20 bg-wenzhai-primary relative overflow-hidden">
+        <!-- 装饰背景 -->
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-teal-800/30 -skew-x-12 transform origin-top-right"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col md:flex-row items-center gap-12 text-white">
+                <div class="md:w-1/2">
+                    <span class="bg-wenzhai-accent px-3 py-1 text-xs font-bold uppercase tracking-wider rounded mb-4 inline-block">年度明星案例</span>
+                    <h2 class="text-4xl font-black mb-6">某大型物流集团调度指挥中台</h2>
+                    <p class="text-teal-100 text-lg leading-relaxed mb-8">
+                        文斋科技通过物联网技术与AI算法，帮助该集团实现了对全国3000+车辆的实时监控与智能调度。
+                        <br><br>
+                        项目成果：调度效率提升40%，空驶率降低15%，不仅实现了业务流的数字化，更通过数据沉淀为企业决策提供了强有力的支撑。
+                    </p>
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <p class="text-3xl font-bold">40%</p>
+                            <p class="text-sm text-teal-200">效率提升</p>
+                        </div>
+                        <div>
+                            <p class="text-3xl font-bold">3000+</p>
+                            <p class="text-sm text-teal-200">连接终端</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2">
+                    <img src="https://picsum.photos/seed/logistics/800/500" alt="Case Study Highlight" class="rounded-lg shadow-2xl border-4 border-white/10">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块 14: 团队介绍 -->
+    <section class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 text-center mb-12">
+            <h2 class="text-3xl font-black text-slate-900">核心团队</h2>
+            <p class="text-slate-500 mt-2">一群热爱代码、追求极致的年轻人</p>
+        </div>
+        <div class="max-w-5xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+            <div class="text-center group">
+                <div class="w-32 h-32 mx-auto rounded-full overflow-hidden mb-4 border-4 border-white shadow-lg group-hover:border-wenzhai-primary transition">
+                    <img src="https://picsum.photos/seed/person1/300/300" alt="Team Member" class="w-full h-full object-cover">
+                </div>
+                <h4 class="font-bold text-lg">李明远</h4>
+                <p class="text-wenzhai-primary text-sm font-medium">技术总监 CTO</p>
+                <p class="text-xs text-slate-400 mt-2">10年架构经验，前阿里高级专家</p>
+            </div>
+            <div class="text-center group">
+                <div class="w-32 h-32 mx-auto rounded-full overflow-hidden mb-4 border-4 border-white shadow-lg group-hover:border-wenzhai-primary transition">
+                    <img src="https://picsum.photos/seed/person2/300/300" alt="Team Member" class="w-full h-full object-cover">
+                </div>
+                <h4 class="font-bold text-lg">张雅文</h4>
+                <p class="text-wenzhai-primary text-sm font-medium">设计总监</p>
+                <p class="text-xs text-slate-400 mt-2">红点奖得主，极简主义推崇者</p>
+            </div>
+            <div class="text-center group">
+                <div class="w-32 h-32 mx-auto rounded-full overflow-hidden mb-4 border-4 border-white shadow-lg group-hover:border-wenzhai-primary transition">
+                    <img src="https://picsum.photos/seed/person3/300/300" alt="Team Member" class="w-full h-full object-cover">
+                </div>
+                <h4 class="font-bold text-lg">陈浩</h4>
+                <p class="text-wenzhai-primary text-sm font-medium">高级产品经理</p>
+                <p class="text-xs text-slate-400 mt-2">深耕B端业务逻辑，洞察敏锐</p>
+            </div>
+            <div class="text-center group">
+                <div class="w-32 h-32 mx-auto rounded-full overflow-hidden mb-4 border-4 border-white shadow-lg group-hover:border-wenzhai-primary transition">
+                    <img src="https://picsum.photos/seed/person4/300/300" alt="Team Member" class="w-full h-full object-cover">
+                </div>
+                <h4 class="font-bold text-lg">赵芸</h4>
+                <p class="text-wenzhai-primary text-sm font-medium">运营总监</p>
+                <p class="text-xs text-slate-400 mt-2">协助客户实现产品冷启动与增长</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块 15: 客户评价 -->
+    <section class="py-20 bg-white">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <i class="ph-fill ph-quotes text-6xl text-slate-200 mb-6 inline-block"></i>
+            <h2 class="text-2xl font-bold mb-10">客户的声音</h2>
+            
+            <div class="bg-slate-50 p-8 rounded-2xl shadow-inner relative">
+                <p class="text-lg text-slate-600 italic mb-6">
+                    "与文斋科技的合作非常愉快。他们不仅仅是执行者，更是思考者。在项目开发过程中，他们提出的关于用户体验的优化建议，让我们的APP留存率有了显著提升。南昌本地能有这样技术实力的团队，令人惊喜。"
+                </p>
+                <div class="flex items-center justify-center gap-4">
+                    <img src="https://picsum.photos/seed/clientface/100/100" class="w-12 h-12 rounded-full object-cover" alt="Client">
+                    <div class="text-left">
+                        <p class="font-bold text-slate-900">王总</p>
+                        <p class="text-xs text-slate-500">某知名餐饮连锁品牌 创始人</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块 16: 新闻动态 -->
+    <section id="news" class="py-20 bg-slate-50 border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-3xl font-bold text-slate-900">文斋动态</h2>
+                <a href="#" class="text-wenzhai-primary font-medium hover:underline">更多资讯</a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <article class="bg-white rounded-lg shadow-sm hover:shadow-md transition overflow-hidden">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://picsum.photos/seed/tech_news1/600/400" alt="News" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-6">
+                        <p class="text-xs text-slate-400 mb-2">2023-10-24</p>
+                        <h3 class="font-bold text-lg mb-2 hover:text-wenzhai-primary cursor-pointer">文斋科技受邀参加2023江西互联网大会</h3>
+                        <p class="text-sm text-slate-500 line-clamp-2">展示最新研发的低代码开发平台，获得与会专家高度评价...</p>
+                    </div>
+                </article>
+                <article class="bg-white rounded-lg shadow-sm hover:shadow-md transition overflow-hidden">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://picsum.photos/seed/tech_news2/600/400" alt="News" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-6">
+                        <p class="text-xs text-slate-400 mb-2">2023-09-15</p>
+                        <h3 class="font-bold text-lg mb-2 hover:text-wenzhai-primary cursor-pointer">关于Flutter 3.0在企业级应用中的实践分享</h3>
+                        <p class="text-sm text-slate-500 line-clamp-2">技术团队内部研讨会干货总结，解析跨平台性能优化方案...</p>
+                    </div>
+                </article>
+                <article class="bg-white rounded-lg shadow-sm hover:shadow-md transition overflow-hidden">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://picsum.photos/seed/tech_news3/600/400" alt="News" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-6">
+                        <p class="text-xs text-slate-400 mb-2">2023-08-01</p>
+                        <h3 class="font-bold text-lg mb-2 hover:text-wenzhai-primary cursor-pointer">喜讯！文斋科技荣获“年度优质技术服务商”称号</h3>
+                        <p class="text-sm text-slate-500 line-clamp-2">凭借在智慧物流领域的突出贡献，我司在行业评选中脱颖而出...</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块 17: 召唤行动 CTA & 联系表单 -->
+    <section id="contact" class="py-20 bg-slate-900 relative">
+        <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <div class="text-white">
+                    <h2 class="text-4xl font-black mb-6">准备好开始您的项目了吗？</h2>
+                    <p class="text-slate-400 mb-8 text-lg">
+                        无论是初创公司的MVP开发，还是大型企业的数字化升级，我们都乐意倾听您的想法。
+                    </p>
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center flex-shrink-0 text-wenzhai-accent">
+                                <i class="ph ph-map-pin text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">公司地址</h4>
+                                <p class="text-slate-400">江西省南昌市西湖区站前路19号<br>中（国恩）大厦北楼2007</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center flex-shrink-0 text-wenzhai-accent">
+                                <i class="ph ph-envelope-simple text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">电子邮箱</h4>
+                                <p class="text-slate-400">contact@jiangxiwenzhai.asia</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center flex-shrink-0 text-wenzhai-accent">
+                                <i class="ph ph-phone text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">联系电话</h4>
+                                <p class="text-slate-400">15434855716</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-8 shadow-2xl">
+                    <form class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">您的姓名</label>
+                                <input type="text" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-wenzhai-primary transition" placeholder="怎么称呼您">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">联系电话</label>
+                                <input type="tel" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-wenzhai-primary transition" placeholder="您的手机号码">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">项目类型</label>
+                            <select class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-wenzhai-primary transition text-slate-600">
+                                <option>移动APP开发</option>
+                                <option>网站/Web系统建设</option>
+                                <option>UI/UX 设计</option>
+                                <option>其他技术咨询</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">需求描述</label>
+                            <textarea rows="4" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-wenzhai-primary transition" placeholder="请简单描述您的需求概况..."></textarea>
+                        </div>
+                        <button type="button" class="w-full py-4 bg-wenzhai-primary text-white font-bold rounded-lg hover:bg-teal-800 transition shadow-lg shadow-teal-500/30">
+                            免费获取方案与报价
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块 18: 页脚 Footer -->
+    <footer class="bg-black text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center gap-2 mb-4 text-white">
+                        <div class="w-8 h-8 bg-wenzhai-primary rounded flex items-center justify-center font-bold">文</div>
+                        <span class="text-xl font-bold">文斋科技</span>
+                    </div>
+                    <p class="text-sm max-w-sm">
+                        江西文斋网络科技有限公司是一家致力于为企业提供高品质数字化解决方案的技术服务商。我们用技术驱动商业创新，用设计提升用户体验。
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4">快速链接</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#about" class="hover:text-wenzhai-primary transition">关于我们</a></li>
+                        <li><a href="#services" class="hover:text-wenzhai-primary transition">服务项目</a></li>
+                        <li><a href="#portfolio" class="hover:text-wenzhai-primary transition">成功案例</a></li>
+                        <li><a href="#contact" class="hover:text-wenzhai-primary transition">联系我们</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4">关注我们</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-wenzhai-primary hover:text-white transition"><i class="ph ph-wechat-logo text-xl"></i></a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-wenzhai-primary hover:text-white transition"><i class="ph ph-tiktok-logo text-xl"></i></a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-wenzhai-primary hover:text-white transition"><i class="ph ph-sina-weibo text-xl"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs">
+                <p>&copy; 2023 江西文斋网络科技有限公司 版权所有 All Rights Reserved.</p>
+                <div class="mt-4 md:mt-0">
+                    <a href="#" class="hover:text-white mr-4">隐私政策</a>
+                    <a href="#" class="hover:text-white">服务条款</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript 交互脚本 -->
+    <script>
+        // 1. 移动端菜单切换
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // 2. 滚动显示动画 (Intersection Observer)
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); // 只触发一次
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-up').forEach(el => {
+            observer.observe(el);
+        });
+
+        // 3. 数字递增动画
+        const counterObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counters = entry.target.querySelectorAll('.counter');
+                    counters.forEach(counter => {
+                        const target = +counter.getAttribute('data-target');
+                        const speed = 200; // 越小越快
+                        
+                        const updateCount = () => {
+                            const count = +counter.innerText;
+                            const inc = target / speed;
+                            
+                            if(count < target) {
+                                counter.innerText = Math.ceil(count + inc);
+                                setTimeout(updateCount, 20);
+                            } else {
+                                counter.innerText = target + "+";
+                            }
+                        }
+                        updateCount();
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const statsSection = document.querySelector('.bg-wenzhai-primary');
+        if(statsSection) {
+            counterObserver.observe(statsSection);
+        }
+
+        // 4. 导航栏滚动效果
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-md');
+            } else {
+                nav.classList.remove('shadow-md');
+            }
+        });
+    </script>
+</body>
+</html>
